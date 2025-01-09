@@ -25,7 +25,6 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("mercuryRadius").textContent = info[10];
         document.getElementById("callistoRadius").textContent = info[11];
         document.getElementById("ioRadius").textContent = info[12];
-        //IMPORTANT: below this line, values don't propagate into the table correctly - find out why and FIX IT!
         document.getElementById("lunaRadius").textContent = info[13];
         document.getElementById("europaRadius").textContent = info[14];
         document.getElementById("tritonRadius").textContent = info[15];
@@ -55,8 +54,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const button = document.getElementById("massUnits");
     const labels = ["Mass (10^21kg)", "Mass (M🜨)"];
     const infoData = {
-        "Mass (10^21kg)": ["1,989,100,000", "1,898,187"],
-        "Mass (M🜨)": ["333,000", "10.97"]
+        "Mass (10^21kg)": ["1,989,100,000","1,898,187","568,317","86,813","102,413","5,972.4","4,867.5","641.71","148.2","134.5","330.11","107.6","89.32","73.46","48","21.39","13.03","16.6","4.01","3.4","2.307","3.08","1.806","3.1","1.75","1.586","1.28","1.25","1.095","1.2","0.617","0.938","0.548","0.492"],
+        "Mass (M🜨)": ["333,000","317.83","95.162","14.536","17.147","1","0.815","0.107","0.0248","0.0225","0.0553","0.018","0.015","0.0123","0.008035","0.003599","0.0022","0.0028","0.00066","0.00059","0.00039","0.0005","0.00033","0.00053","0.00029","0.00025","0.0002","0.000226","0.000183","0.0002","0.000103","0.000157","0.000092","0.000082"]
     };
     let currentIndex = 0;
     
@@ -99,8 +98,7 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("tethysMass").textContent = info[30];
         document.getElementById("ceresMass").textContent = info[31];
         document.getElementById("orcusMass").textContent = info[32];
-        document.getElementById("sednaMass").textContent = info[33];
-        document.getElementById("salaciaMass").textContent = info[34];
+        document.getElementById("salaciaMass").textContent = info[33];
     });
 });
 
@@ -108,8 +106,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const button = document.getElementById("gravityUnits");
     const labels = ["Gravity (m/s^2)", "Gravity (🜨)"];
     const infoData = {
-        "Gravity (m/s^2)": ["274", "24.79"],
-        "Gravity (🜨)": ["27.94", "2.528"]
+        "Gravity (m/s^2)": ["274","24.79","10.44","8.69","11.15","9.81","8.87","3.71","1.428","1.354","3.70","1.23603","1.797","1.625","1.316","0.782","0.62","0.824","0.401","0.378","0.26","0.347","0.223","0.57","0.3","0.288","0.234","0.269","0.232","0.3","0.145","0.28","0.2","0.165"],
+        "Gravity (🜨)": ["27.94","2.528","1.065","0.886","1.137","1","0.905","0.379","0.146","0.138","0.377","0.126","0.183","0.166","0.134","0.0797","0.063","0.083","0.0409","0.0385","0.027","0.035","0.0227","0.0581","0.0306","0.0294","0.024","0.027","0.0237","0.0306","0.015","0.029","0.0204","0.0168"]
     };
     let currentIndex = 0;
     
@@ -152,7 +150,6 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("tethysGravity").textContent = info[30];
         document.getElementById("ceresGravity").textContent = info[31];
         document.getElementById("orcusGravity").textContent = info[32];
-        document.getElementById("sednaGravity").textContent = info[33];
-        document.getElementById("salaciaGravity").textContent = info[34];
+        document.getElementById("salaciaGravity").textContent = info[33];
     });
 });
