@@ -19,252 +19,261 @@
         <table border="1">
             <tr>
                 <th>Body</th>
-                <th>Radius (km)</th>
-                <th>Mass (Earth)</th>
+                <th>
+                    <button id="radiusUnits">Radius (km)</button>
+                    <script src="script.js"></script>
+                </th>
+                <th>
+                    <button id="massUnits">Mass (10^21kg)</button>
+                    <script src="script.js"></script>
+                </th>
                 <th>Density (g/cm^3)</th>
-                <th>Gravity (m/s^2)</th>
+                <th>
+                    <button id="gravityUnits">Gravity (m/s^2)</button>
+                    <script src="script.js"></script>
+                </th>
             </tr>
             <tr>
                 <td>Sun</td>
-                <td>695,700</td>
-                <td>333,000</td>
+                <td id="sunRadius">695,000</td>
+                <td id="sunMass">1,989,100,000</td>
                 <td>1.409</td>
                 <td>274.0</td>
             </tr>
             <tr>
                 <td>Jupiter</td>
-                <td>69,911</td>
-                <td>317.83</td>
+                <td id="jupiterRadius">69,911</td>
+                <td id="jupiterMass">1,898,187</td>
                 <td>1.3262</td>
                 <td>24.79</td>
             </tr>
             <tr>
                 <td>Saturn</td>
-                <td>58,232</td>
+                <td id="saturnRadius">58,232</td>
                 <td>95.162</td>
                 <td>0.6871</td>
                 <td>10.44</td>
             </tr>
             <tr>
                 <td>Uranus</td>
-                <td>25,362</td>
+                <td id="uranusRadius">25,362</td>
                 <td>14.536</td>
                 <td>1.270</td>
                 <td>8.69</td>
             </tr>
             <tr>
                 <td>Neptune</td>
-                <td>24,622</td>
+                <td id="neptuneRadius">24,622</td>
                 <td>17.147</td>
                 <td>0.6871</td>
                 <td>11.15</td>
             </tr>
             <tr>
                 <td>Earth</td>
-                <td>6,371</td>
+                <td id="earthRadius">6,371</td>
                 <td>1</td>
                 <td>5.5136</td>
                 <td>9.81</td>
             </tr>
             <tr>
                 <td>Venus</td>
-                <td>6,051.8</td>
+                <td id="venusRadius">6,051.8</td>
                 <td>0.815</td>
                 <td>5.243</td>
                 <td>8.87</td>
             </tr>
             <tr>
                 <td>Mars</td>
-                <td>3,389.5</td>
+                <td id="marsRadius">3,389.5</td>
                 <td>0.107</td>
                 <td>3.9341</td>
                 <td>3.71</td>
             </tr>
             <tr>
                 <td>Ganymede</td>
-                <td>2,634.1</td>
+                <td id="ganymedeRadius">2,634.1</td>
                 <td>0.0248</td>
                 <td>1.936</td>
                 <td>1.428</td>
             </tr>
             <tr>
                 <td>Titan</td>
-                <td>2,574.73</td>
+                <td id="titanRadius">2,574.73</td>
                 <td>0.0225</td>
                 <td>1.880</td>
                 <td>1.354</td>
             </tr>
             <tr>
                 <td>Mercury</td>
-                <td>2,439.4</td>
+                <td id="mercuryRadius">2,439.4</td>
                 <td>0.0553</td>
                 <td>5.4291</td>
                 <td>3.70</td>
             </tr>
             <tr>
                 <td>Callisto</td>
-                <td>2,410.3</td>
+                <td id="callistoRadius">2,410.3</td>
                 <td>0.018</td>
                 <td>1.834</td>
                 <td>1.23603</td>
             </tr>
             <tr>
                 <td>Io</td>
-                <td>1,821.6</td>
+                <td id="ioRadius">1,821.6</td>
                 <td>0.015</td>
                 <td>3.528</td>
                 <td>1.797</td>
             </tr>
             <tr>
                 <td>Luna</td>
-                <td>1,737.4</td>
+                <td id="lunaRadius">1,737.4</td>
                 <td>0.0123</td>
                 <td>3.344</td>
                 <td>1.625</td>
             </tr>
             <tr>
                 <td>Europa</td>
-                <td>1,560.8</td>
+                <td id="europaRadius">1,560.8</td>
                 <td>0.008035</td>
                 <td>3.013</td>
                 <td>1.316</td>
             </tr>
             <tr>
                 <td>Triton</td>
-                <td>1,353.4</td>
+                <td id="tritonRadius">1,353.4</td>
                 <td>0.003599</td>
                 <td>2.061</td>
                 <td>0.782</td>
             </tr>
             <tr>
                 <td>Pluto</td>
-                <td>1,188.3</td>
+                <td id="plutoRadius">1,188.3</td>
                 <td>0.0022</td>
                 <td>1.854</td>
                 <td>0.62</td>
             </tr>
             <tr>
                 <td>Eris</td>
-                <td>1,163</td>
+                <td id="erisRadius">1,163</td>
                 <td>0.0028</td>
                 <td>2.52</td>
                 <td>0.824</td>
             </tr>
             <tr>
                 <td>Haumea</td>
-                <td>816</td>
+                <td id="haumeaRadius">816</td>
                 <td>0.00066</td>
                 <td>2.018</td>
                 <td>0.401</td>
             </tr>
             <tr>
                 <td>Titania</td>
-                <td>788.9</td>
+                <td id="titaniaRadius">788.9</td>
                 <td>0.00059</td>
                 <td>1.711</td>
                 <td>0.378</td>
             </tr>
             <tr>
                 <td>Rhea</td>
-                <td>763.8</td>
+                <td id="rheaRadius">763.8</td>
                 <td>0.00039</td>
                 <td>1.236</td>
                 <td>0.26</td>
             </tr>
             <tr>
                 <td>Oberon</td>
-                <td>761.4</td>
+                <td id="oberonRadius">761.4</td>
                 <td>0.0005</td>
                 <td>1.63</td>
                 <td>0.347</td>
             </tr>
             <tr>
                 <td>Iapetus</td>
-                <td>735.6</td>
+                <td id="iapetusRadius">735.6</td>
                 <td>0.00033</td>
                 <td>1.088</td>
                 <td>0.223</td>
             </tr>
             <tr>
                 <td>Makemake</td>
-                <td>715</td>
+                <td id="makemakeRadius">715</td>
                 <td>0.00053</td>
                 <td>2.1</td>
                 <td>0.57</td>
             </tr>
             <tr>
                 <td>Gonggong</td>
-                <td>615</td>
+                <td id="gonggongRadius">615</td>
                 <td>0.00029</td>
                 <td>1.72</td>
                 <td>0.3</td>
             </tr>
             <tr>
                 <td>Charon</td>
-                <td>606</td>
+                <td id="charonRadius">606</td>
                 <td>0.00025</td>
                 <td>1.7</td>
                 <td>0.288</td>
             </tr>
             <tr>
                 <td>Umbriel</td>
-                <td>584.7</td>
+                <td id="umbrielRadius">584.7</td>
                 <td>0.0002</td>
                 <td>1.39</td>
                 <td>0.234</td>
             </tr>
             <tr>
                 <td>Ariel</td>
-                <td>578.9</td>
+                <td id="arielRadius">578.9</td>
                 <td>0.000226</td>
                 <td>1.66</td>
                 <td>0.269</td>
             </tr>
             <tr>
                 <td>Dione</td>
-                <td>561.7</td>
+                <td id="dioneRadius">561.7</td>
                 <td>0.000183</td>
                 <td>1.478</td>
                 <td>0.232</td>
             </tr>
             <tr>
                 <td>Quaoar</td>
-                <td>543</td>
+                <td id="quaoarRadius">543</td>
                 <td>0.0002</td>
                 <td>2</td>
                 <td>0.3</td>
             </tr>
             <tr>
                 <td>Tethys</td>
-                <td>533</td>
+                <td id="tethysRadius">533</td>
                 <td>0.000103</td>
                 <td>0.984</td>
                 <td>0.145</td>
             </tr>
             <tr>
                 <td>Ceres</td>
-                <td>469.7</td>
+                <td id="ceresRadius">469.7</td>
                 <td>0.000157</td>
                 <td>2.17</td>
                 <td>0.28</td>
             </tr>
             <tr>
                 <td>Orcus</td>
-                <td>455</td>
+                <td id="orcusRadius">455</td>
                 <td>0.000092</td>
                 <td>1.4</td>
                 <td>0.2</td>
             </tr>
             <tr>
                 <td>Sedna</td>
-                <td>453</td>
+                <td id="sednaRadius">453</td>
                 <td></td>
                 <td></td>
                 <td></td>
             </tr>
             <tr>
                 <td>Salacia</td>
-                <td>423</td>
+                <td id="salaciaRadius">423</td>
                 <td>0.000082</td>
                 <td>1.5</td>
                 <td>0.165</td>
