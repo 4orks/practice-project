@@ -8,7 +8,16 @@
 
     <body>
 
-        <h1 class="uppercase center-text">Planetarium</h1>
+      <div id="menuIcon" onclick="toggleMenu()">&#9776;</div>
+
+      <div id="sideMenu" class="side-menu">
+        <a href="javascript:void(0)" class="close-btn" onclick="toggleMenu()">&times;</a>
+        <a href="index.html">Home</a>
+        <a href="orbit.html">Orbits</a>
+        <a href="#about">About</a>
+      </div>
+      
+      <h1 class="uppercase center-text">Planetarium</h1>
 
         <p class="center-text">
             Planetarium is a website designed to provide all manner of information about planetary bodies within the Sol System and beyond for quick and easy reference.
@@ -31,6 +40,6 @@
             </tbody>
           </table>
         
-          <script src="script.js"></script>
+      <script src="script.js"></script>
     </body>
 </html>

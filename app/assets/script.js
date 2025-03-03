@@ -38,30 +38,6 @@ const planetData = [
 ];
 
 document.addEventListener("DOMContentLoaded", function () {
-const tableBody = document.querySelector("#planetTable tbody");
-
-// Function to generate table rows
-function generateTableRows(data) {
-    return data
-    .map(
-        (planet) => `
-    <tr>
-        <td>${planet.body}</td>
-        <td class="radius">${planet.radius_km}</td>
-        <td class="mass">${planet.mass_kg}</td>
-        <td>${planet.density}</td>
-        <td class="gravity">${planet.gravity_ms2}</td>
-    </tr>
-    `
-    )
-    .join("");
-}
-
-// Insert rows into the table
-tableBody.innerHTML = generateTableRows(planetData);
-});
-
-document.addEventListener("DOMContentLoaded", function () {
     const tableBody = document.querySelector("#planetTable tbody");
   
     // Function to generate table rows
@@ -122,4 +98,119 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("gravityUnits").textContent = gravityUnits.labels[nextIndex];
       updateColumn("gravity", nextIndex, gravityUnits.keys[nextIndex]);
     });
+});
+
+function toggleMenu() {
+  var sideMenu = document.getElementById("sideMenu");
+  if (sideMenu.style.width === "250px") {
+      sideMenu.style.width = "0";
+  } else {
+      sideMenu.style.width = "250px";
+  }
+}
+
+// Orbital Simulation
+// Wait for the DOM to load
+document.addEventListener("DOMContentLoaded", function () {
+  // Simulation settings
+  const width = 800; // Width of the simulation container
+  const height = 600; // Height of the simulation container
+  let isPlaying = true; // Play/pause state
+  let simulationSpeed = 1; // Speed multiplier
+  let isReversed = false; // Reverse playback state
+  let simulationTime = 0; // Track simulation time separately
+  let lastUpdateTime = Date.now(); // Track the last update time
+
+  // Set up SVG canvas
+  const svg = d3.select("#simulationContainer")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height);
+
+  // Example orbital data (simplified and scaled)
+  const planets = [
+      { name: "Sun", radius: 10, orbitRadius: 0, color: "yellow" },
+      { name: "Mercury", radius: 0.5, orbitRadius: 50, color: "gray" },
+      { name: "Venus", radius: 0.9, orbitRadius: 80, color: "orange" },
+      { name: "Earth", radius: 1, orbitRadius: 110, color: "blue" },
+      { name: "Mars", radius: 0.5, orbitRadius: 140, color: "red" },
+      // Add more planets and moons...
+  ];
+
+  // Create circles for each planet
+  const planetElements = svg.selectAll("circle")
+      .data(planets)
+      .enter()
+      .append("circle")
+      .attr("r", d => d.radius)
+      .attr("fill", d => d.color);
+
+  // Update planet positions
+  function updatePositions() {
+    const currentTime = Date.now();
+    const deltaTime = (currentTime - lastUpdateTime) / 1000; // Time elapsed since last update (in seconds)
+    lastUpdateTime = currentTime;
+
+    if (isPlaying) {
+        simulationTime += deltaTime * simulationSpeed * (isReversed ? -1 : 1); // Update simulation time
+    }
+
+    planetElements.attr("cx", (d, i) => {
+        if (i === 0) return width / 2; // Sun stays in the center
+        const angle = simulationTime * (2 * Math.PI) / (d.orbitRadius * 0.1); // Simplified orbital speed
+        return width / 2 + Math.cos(angle) * d.orbitRadius;
+    })
+    .attr("cy", (d, i) => {
+        if (i === 0) return height / 2; // Sun stays in the center
+        const angle = simulationTime * (2 * Math.PI) / (d.orbitRadius * 0.1); // Simplified orbital speed
+        return height / 2 + Math.sin(angle) * d.orbitRadius;
+    });
+  }
+
+  // Animation loop
+  function animate() {
+      if (isPlaying) {
+          updatePositions();
+      }
+      requestAnimationFrame(animate);
+  }
+  animate();
+
+  // Zoom functionality (restricted to simulation content)
+  const zoom = d3.zoom()
+      .scaleExtent([0.1, 10])
+      .on("zoom", (event) => {
+          planetElements.attr("transform", event.transform);
+      });
+
+  svg.call(zoom);
+
+  // Playback controls
+  document.getElementById("playPause").addEventListener("click", () => {
+      isPlaying = !isPlaying;
+      document.getElementById("playPause").textContent = isPlaying ? "Pause" : "Play";
+      lastUpdateTime = Date.now(); // Reset the last update time when toggling play/pause
+  });
+
+  document.getElementById("speedUp").addEventListener("click", () => {
+      simulationSpeed *= 2; // Double the speed
+      console.log("Speed:", simulationSpeed); // Debugging
+  });
+
+  document.getElementById("slowDown").addEventListener("click", () => {
+      simulationSpeed /= 2; // Halve the speed
+      console.log("Speed:", simulationSpeed); // Debugging
+  });
+
+  document.getElementById("reverse").addEventListener("click", () => {
+      isReversed = !isReversed; // Toggle reverse playback
+      console.log("Reversed:", isReversed); // Debugging
+  });
+
+  // Reset zoom functionality
+  document.getElementById("resetZoom").addEventListener("click", () => {
+      svg.transition()
+          .duration(750) // Smooth transition
+          .call(zoom.transform, d3.zoomIdentity); // Reset to original transform
+  });
 });

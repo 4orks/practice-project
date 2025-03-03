@@ -4,5 +4,53 @@
     <head>
         <title>Orbits</title>
         <link rel="stylesheet" type="text/css" href="styles.css">
+        <style>
+            body { margin: 0; font-family: sans-serif; }
+        #simulationContainer {
+            width: 800px;
+            height: 600px;
+            margin: 20px auto;
+            border: 2px solid #ccc;
+            position: relative;
+            overflow: hidden;
+            background: #000;
+        }
+        #controls {
+            text-align: center;
+            margin-top: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        </style>
     </head>
+
+    <body>
+        <div id="menuIcon" onclick="toggleMenu()">&#9776;</div>
+
+        <div id="sideMenu" class="side-menu">
+            <a href="javascript:void(0)" class="close-btn" onclick="toggleMenu()">&times;</a>
+            <a href="index.html">Home</a>
+            <a href="orbit.html">Orbits</a>
+            <a href="#about">About</a>
+        </div>
+
+        <!-- Simulation Container -->
+        <div id="simulationContainer"></div>
+
+        <!-- Playback Controls -->
+        <div id="controls">
+            <button id="playPause">Play</button>
+            <button id="speedUp">Speed Up</button>
+            <button id="slowDown">Slow Down</button>
+            <button id="reverse">Reverse</button>
+            <button id="resetZoom">Reset Zoom</button>
+        </div>
+
+        <script src="script.js"></script>
+        <script src="https://d3js.org/d3.v7.min.js"></script>
+    </body>
 </html>
