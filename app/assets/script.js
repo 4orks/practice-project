@@ -110,16 +110,16 @@ function toggleMenu() {
 }
 
 // Orbital Simulation
-// Wait for the DOM to load
 document.addEventListener("DOMContentLoaded", function () {
   // Simulation settings
   const width = 800; // Width of the simulation container
   const height = 600; // Height of the simulation container
   let isPlaying = true; // Play/pause state
   let simulationSpeed = 1; // Speed multiplier
-  let isReversed = false; // Reverse playback state
+  let isReversed = true; // Reverse playback state
   let simulationTime = 0; // Track simulation time separately
   let lastUpdateTime = Date.now(); // Track the last update time
+  const minVisualSize = 2; // Minimum visual size for objects (in pixels)
 
   // Set up SVG canvas
   const svg = d3.select("#simulationContainer")
@@ -127,63 +127,201 @@ document.addEventListener("DOMContentLoaded", function () {
       .attr("width", width)
       .attr("height", height);
 
+  // Create a group for all planets and moons (affected by zoom and pan)
+  const simulationGroup = svg.append("g");
+
+  // Create a group for minimum size circles (NOT affected by zoom/pan transforms)
+  const minSizeGroup = svg.append("g");
+
   // Example orbital data (simplified and scaled)
   const planets = [
-      { name: "Sun", radius: 10, orbitRadius: 0, color: "yellow" },
-      { name: "Mercury", radius: 0.5, orbitRadius: 50, color: "gray" },
-      { name: "Venus", radius: 0.9, orbitRadius: 80, color: "orange" },
-      { name: "Earth", radius: 1, orbitRadius: 110, color: "blue" },
-      { name: "Mars", radius: 0.5, orbitRadius: 140, color: "red" },
-      // Add more planets and moons...
+      { name: "Sun", radius: 696340, orbitRadius: 0, color: "yellow", zIndex: 1000 },
+      { name: "Mercury", radius: 2440, orbitRadius: 57900000, color: "gray", zIndex: 900 },
+      { name: "Venus", radius: 6052, orbitRadius: 108200000, color: "orange", zIndex: 800 },
+      { name: "Earth", radius: 6371, orbitRadius: 149600000, color: "blue", zIndex: 700 },
+      { name: "Luna", radius: 1737, orbitRadius: 384400, color: "gray", parent: "Earth", zIndex: 600 },
+      { name: "Mars", radius: 3389, orbitRadius: 228000000, color: "red", zIndex: 500 },
+      { name: "Jupiter", radius: 69911, orbitRadius: 778500000, color: "orange", zIndex: 400 },
+      { name: "Io", radius: 1822, orbitRadius: 422000, color: "yellow", parent: "Jupiter", zIndex: 300 },
+      { name: "Europa", radius: 1561, orbitRadius: 671000, color: "gray", parent: "Jupiter", zIndex: 200 },
+      { name: "Ganymede", radius: 2634, orbitRadius: 1070000, color: "gray", parent: "Jupiter", zIndex: 100 },
+      { name: "Callisto", radius: 2410, orbitRadius: 1883000, color: "darkgray", parent: "Jupiter", zIndex: 50 },
+      { name: "Saturn", radius: 58232, orbitRadius: 1432000000, color: "yellow", zIndex: 400 },
+      { name: "Titan", radius: 2575, orbitRadius: 1221870, color: "orange", parent: "Saturn", zIndex: 300 },
+      { name: "Uranus", radius: 25362, orbitRadius: 2867000000, color: "aqua", zIndex: 400 },
+      { name: "Neptune", radius: 24622, orbitRadius: 4515000000, color: "blue", zIndex: 400 },
+      { name: "Triton", radius: 1353, orbitRadius: 354759, color: "gray", parent: "Neptune", zIndex: 300, retrograde: true } // Triton has retrograde motion
   ];
 
-  // Create circles for each planet
-  const planetElements = svg.selectAll("circle")
+  // Sort planets by zIndex (lowest first, so moons are added before planets)
+  planets.sort((a, b) => a.zIndex - b.zIndex);
+
+  // Scale down the sizes and distances for visualization
+  const scaleFactor = 1 / 1000000; // Use the same scaling factor for sizes and distances
+
+  // Create circles for each planet (minimum size)
+  const minSizeElements = minSizeGroup.selectAll("circle.minSize")
       .data(planets)
       .enter()
       .append("circle")
-      .attr("r", d => d.radius)
+      .attr("class", "minSize")
+      .attr("r", minVisualSize) // Always 3 pixels wide
       .attr("fill", d => d.color);
+
+  // Create circles for each planet (actual size)
+  const planetElements = simulationGroup.selectAll("circle.planet")
+      .data(planets)
+      .enter()
+      .append("circle")
+      .attr("class", "planet")
+      .attr("r", d => d.radius * scaleFactor) // Actual size
+      .attr("fill", d => d.color);
+
+  // Tooltip element
+  const tooltip = d3.select("body").append("div")
+      .attr("class", "tooltip")
+      .style("position", "absolute")
+      .style("visibility", "hidden")
+      .style("background-color", "white")
+      .style("border", "1px solid black")
+      .style("padding", "5px")
+      .style("border-radius", "5px");
+
+  // Add tooltip functionality
+  planetElements.on("mouseover", function (event, d) {
+      tooltip.style("visibility", "visible")
+          .text(d.name)
+          .style("left", (event.pageX + 5) + "px")
+          .style("top", (event.pageY - 20) + "px");
+  }).on("mouseout", function () {
+      tooltip.style("visibility", "hidden");
+  });
+
+  minSizeElements.on("mouseover", function (event, d) {
+      tooltip.style("visibility", "visible")
+          .text(d.name)
+          .style("left", (event.pageX + 5) + "px")
+          .style("top", (event.pageY - 20) + "px");
+  }).on("mouseout", function () {
+      tooltip.style("visibility", "hidden");
+  });
+
+  // Zoom functionality
+  let currentTransform = d3.zoomIdentity; // Track the current zoom/pan transform
+  const zoom = d3.zoom()
+      .scaleExtent([0.05, 500])
+      .on("zoom", (event) => {
+          currentTransform = event.transform; // Update the current transform
+          simulationGroup.attr("transform", currentTransform); // Apply transform to simulation group
+          updateMinSizePositions(); // Update minSize positions manually
+      });
+
+  svg.call(zoom);
+
+  // Reset zoom functionality
+  document.getElementById("resetZoom").addEventListener("click", () => {
+      svg.transition()
+          .duration(750) // Smooth transition
+          .call(zoom.transform, d3.zoomIdentity); // Reset to original transform
+  });
+
+  // Track the currently centered object
+  let centeredObject = null;
+
+  // Click-to-center functionality
+  function toggleCenteredObject(d) {
+      if (centeredObject && centeredObject.name === d.name) {
+          // If the clicked object is already centered, unfollow it
+          centeredObject = null;
+      } else {
+          // Otherwise, center on the clicked object
+          centeredObject = d;
+      }
+  }
+
+  planetElements.on("click", function (event, d) {
+      toggleCenteredObject(d);
+  });
+
+  minSizeElements.on("click", function (event, d) {
+      toggleCenteredObject(d);
+  });
 
   // Update planet positions
   function updatePositions() {
-    const currentTime = Date.now();
-    const deltaTime = (currentTime - lastUpdateTime) / 1000; // Time elapsed since last update (in seconds)
-    lastUpdateTime = currentTime;
+      const currentTime = Date.now();
+      const deltaTime = (currentTime - lastUpdateTime) / 1000; // Time elapsed since last update (in seconds)
+      lastUpdateTime = currentTime;
 
-    if (isPlaying) {
-        simulationTime += deltaTime * simulationSpeed * (isReversed ? -1 : 1); // Update simulation time
-    }
+      if (isPlaying) {
+          simulationTime += deltaTime * simulationSpeed * (isReversed ? -1 : 1); // Update simulation time
+      }
 
-    planetElements.attr("cx", (d, i) => {
-        if (i === 0) return width / 2; // Sun stays in the center
-        const angle = simulationTime * (2 * Math.PI) / (d.orbitRadius * 0.1); // Simplified orbital speed
-        return width / 2 + Math.cos(angle) * d.orbitRadius;
-    })
-    .attr("cy", (d, i) => {
-        if (i === 0) return height / 2; // Sun stays in the center
-        const angle = simulationTime * (2 * Math.PI) / (d.orbitRadius * 0.1); // Simplified orbital speed
-        return height / 2 + Math.sin(angle) * d.orbitRadius;
-    });
+      // Calculate positions for all objects
+      planets.forEach((planet, index) => {
+          if (planet.name === "Sun") {
+              // Sun: Always stays at the center
+              planet.cx = width / 2;
+              planet.cy = height / 2;
+          } else if (planet.parent) {
+              // Moons: Calculate position relative to their parent planet
+              const parentPlanet = planets.find(p => p.name === planet.parent);
+              if (parentPlanet) {
+                  const parentAngle = simulationTime * (2 * Math.PI) / (parentPlanet.orbitRadius * scaleFactor * 0.1);
+                  const parentX = width / 2 + Math.cos(parentAngle) * parentPlanet.orbitRadius * scaleFactor;
+                  const parentY = height / 2 + Math.sin(parentAngle) * parentPlanet.orbitRadius * scaleFactor;
+
+                  // Adjust angle for retrograde moons
+                  const moonAngle = simulationTime * (2 * Math.PI) / (planet.orbitRadius * scaleFactor * 0.1) * (planet.retrograde ? -1 : 1);
+                  planet.cx = parentX + Math.cos(moonAngle) * planet.orbitRadius * scaleFactor;
+                  planet.cy = parentY + Math.sin(moonAngle) * planet.orbitRadius * scaleFactor;
+              }
+          } else {
+              // Planets: Calculate position relative to the Sun
+              const angle = simulationTime * (2 * Math.PI) / (planet.orbitRadius * scaleFactor * 0.1);
+              planet.cx = width / 2 + Math.cos(angle) * planet.orbitRadius * scaleFactor;
+              planet.cy = height / 2 + Math.sin(angle) * planet.orbitRadius * scaleFactor;
+          }
+
+          // Update planet positions (in base coordinates)
+          planetElements.filter((d, i) => i === index)
+              .attr("cx", planet.cx)
+              .attr("cy", planet.cy);
+      });
+
+      // Update minSize positions
+      updateMinSizePositions();
+
+      // If an object is centered, adjust the zoom transform to follow it
+      if (centeredObject) {
+          const centeredElement = planetElements.filter(d => d.name === centeredObject.name);
+          const cx = +centeredElement.attr("cx");
+          const cy = +centeredElement.attr("cy");
+
+          // Calculate the new transform to center on the object
+          const newTranslate = [
+              width / 2 - cx * currentTransform.k,
+              height / 2 - cy * currentTransform.k
+          ];
+
+          // Apply the new transform
+          svg.call(zoom.transform, d3.zoomIdentity.translate(newTranslate[0], newTranslate[1]).scale(currentTransform.k));
+      }
+  }
+
+  // Update minSize positions using current transform
+  function updateMinSizePositions() {
+      minSizeElements
+          .attr("cx", d => d.cx * currentTransform.k + currentTransform.x)
+          .attr("cy", d => d.cy * currentTransform.k + currentTransform.y);
   }
 
   // Animation loop
   function animate() {
-      if (isPlaying) {
-          updatePositions();
-      }
+      updatePositions();
       requestAnimationFrame(animate);
   }
   animate();
-
-  // Zoom functionality (restricted to simulation content)
-  const zoom = d3.zoom()
-      .scaleExtent([0.1, 10])
-      .on("zoom", (event) => {
-          planetElements.attr("transform", event.transform);
-      });
-
-  svg.call(zoom);
 
   // Playback controls
   document.getElementById("playPause").addEventListener("click", () => {
@@ -205,12 +343,5 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("reverse").addEventListener("click", () => {
       isReversed = !isReversed; // Toggle reverse playback
       console.log("Reversed:", isReversed); // Debugging
-  });
-
-  // Reset zoom functionality
-  document.getElementById("resetZoom").addEventListener("click", () => {
-      svg.transition()
-          .duration(750) // Smooth transition
-          .call(zoom.transform, d3.zoomIdentity); // Reset to original transform
   });
 });
